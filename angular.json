@@ -22,11 +22,10 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:jest",
           "options": {
-            "main": "projects/ngx-whats-new/src/test.ts",
             "tsConfig": "projects/ngx-whats-new/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-whats-new/karma.conf.js"
+            "polyfills": ["zone.js", "zone.js/testing"]
           }
         }
       }
@@ -43,27 +42,25 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/test-app",
+            "outputPath": {
+              "base": "dist/test-app"
+            },
             "index": "projects/test-app/src/index.html",
-            "main": "projects/test-app/src/main.ts",
-            "polyfills": "projects/test-app/src/polyfills.ts",
+            "polyfills": ["projects/test-app/src/polyfills.ts"],
             "tsConfig": "projects/test-app/tsconfig.app.json",
             "assets": [
               "projects/test-app/src/favicon.ico",
               "projects/test-app/src/assets"
             ],
-            "styles": [
-              "projects/test-app/src/styles.scss"
-            ],
+            "styles": ["projects/test-app/src/styles.scss"],
             "scripts": [],
-            "vendorChunk": true,
             "extractLicenses": false,
-            "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "browser": "projects/test-app/src/main.ts"
           },
           "configurations": {
             "production": {
@@ -78,8 +75,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -99,47 +94,29 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "test-app:build"
+            "buildTarget": "test-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "test-app:build:production"
+              "buildTarget": "test-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "test-app:build"
+            "buildTarget": "test-app:build"
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-devkit/build-angular:jest",
           "options": {
-            "main": "projects/test-app/src/test.ts",
-            "polyfills": "projects/test-app/src/polyfills.ts",
-            "tsConfig": "projects/test-app/tsconfig.spec.json",
-            "karmaConfig": "projects/test-app/karma.conf.js",
-            "assets": [
-              "projects/test-app/src/favicon.ico",
-              "projects/test-app/src/assets"
+            "polyfills": [
+              "projects/test-app/src/polyfills.ts",
+              "zone.js",
+              "zone.js/testing"
             ],
-            "styles": [
-              "projects/test-app/src/styles.scss"
-            ],
-            "scripts": []
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/test-app/e2e/protractor.conf.js",
-            "devServerTarget": "test-app:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "test-app:serve:production"
-            }
+            "tsConfig": "projects/test-app/tsconfig.spec.json"
           }
         }
       }

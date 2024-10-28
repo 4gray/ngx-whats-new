@@ -1,57 +1,110 @@
-<div class="modal">
-  <div class="modal-layout">
-    <div
-      class="modal-body"
-      [style.width]="_options.customStyle?.width"
-      [style.border-radius]="_options.customStyle?.borderRadius"
-      [style.border]="_options.customStyle?.borderSize"
-      [style.boxShadow]="_options.customStyle?.boxShadow"
-      [style.backgroundColor]="_options.customStyle?.backgroundColor"
-      [style.color]="_options.customStyle?.textColor"
+@if (isVisible) {
+<div class="wn-modal-container">
+  <div
+    role="dialog"
+    class="wn-modal"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+    aria-describedby="modal-description"
+    cdkTrapFocus
+  >
+    @if (!options.disableClose) {
+    <button
+      #wnCloseButton
+      aria-label="Close dialog"
+      class="wn-close-modal-button"
+      (click)="close()"
     >
+      ⛌
+    </button>
+    }
+    <div class="wn-modal-layout">
       <div
-        *ngIf="items[selected]?.imageSrc"
-        class="image"
-        [style.background-color]="items[selected]?.imageBgColor"
-        [style.height]="items[selected]?.imageHeight + 'px'"
+        class="wn-modal-body"
+        aria-live="polite"
+        [style.padding-top]="items[selectedIndex].image ? '' : '1.4em'"
+        [style.width]="options.customStyle.width"
+        [style.border-radius]="options.customStyle.borderRadius"
+        [style.border]="options.customStyle.borderSize"
+        [style.boxShadow]="options.customStyle.boxShadow"
+        [style.backgroundColor]="options.customStyle.backgroundColor"
+        [style.color]="options.customStyle.textColor"
       >
-        <img [src]="items[selected]?.imageSrc" />
-      </div>
-      <div class="title" *ngIf="items[selected]?.title">
-        {{ items[selected]?.title }}
-      </div>
-      <div class="text" *ngIf="items[selected]?.text">
-        {{ items[selected]?.text }}
-      </div>
-      <div
-        class="text"
-        *ngIf="items[selected]?.html"
-        [innerHTML]="items[selected]?.html"
-      ></div>
-      <div
-        class="button"
-        [style.text-align]="btn?.position || 'center'"
-        *ngIf="items[selected]?.button as btn"
-      >
-        <button
-          [style.background-color]="btn?.bgColor"
-          [style.color]="btn?.textColor"
-          (click)="goToNext()"
+        @if (items[selectedIndex].image) { @let img =
+        items[selectedIndex].image;
+        <div
+          class="wn-image"
+          [style.background-color]="img?.bgColor"
+          [style.height]="img?.height + 'px'"
         >
-          {{ btn.text }}
-        </button>
+          <img [src]="img?.src" [alt]="img?.altText" />
+        </div>
+        }
+        <div class="wn-info-body">
+          @if (items[selectedIndex].title) {
+          <div class="wn-title">
+            {{ items[selectedIndex].title }}
+          </div>
+          } @if (items[selectedIndex].text) {
+          <div class="wn-text">
+            {{ items[selectedIndex].text }}
+          </div>
+          } @if (items[selectedIndex].html) {
+          <div class="wn-text" [innerHTML]="items[selectedIndex].html"></div>
+          } @if (items[selectedIndex].button) { @let btn =
+          items[selectedIndex].button;
+          <button
+            class="wn-button"
+            [style.align-self]="btn?.position ?? 'center'"
+            [style.background-color]="btn?.bgColor"
+            [style.color]="btn?.textColor"
+            (click)="goToNext()"
+          >
+            {{ btn?.text }}
+          </button>
+          }
+        </div>
       </div>
+      @if (items.length > 1) {
+      <nav aria-label="Carousel-like item navigation" class="wn-navigation">
+        <ul class="wn-navigation-list" role="tablist">
+          @for (item of items; track item.title; let i = $index;) {
+          <li
+            class="wn-dot"
+            role="tabpanel"
+            [class.clickable]="options.clickableNavigationDots"
+            [class.active]="i === selectedIndex"
+            [class.inactive]="i !== selectedIndex"
+          >
+            <button
+              #wnNavButton
+              role="tab"
+              [attr.aria-selected]="i === selectedIndex"
+              [attr.aria-controls]="'tabpanel-' + i"
+              [id]="'tab-' + i"
+              [tabindex]="i === selectedIndex ? '0' : '-1'"
+              (click)="navigateTo(i)"
+              [attr.aria-label]="
+                (i === selectedIndex ? 'Current slide, ' : '') +
+                'Navigate to item ' +
+                (i + 1)
+              "
+              class="wn-nav-button"
+            >
+              Navigate to item {{ i + 1 }}
+            </button>
+          </li>
+          }
+        </ul>
+      </nav>
+      }
     </div>
-    <ul class="navigation" *ngIf="items.length > 1">
-      <li
-        class="dot"
-        [class.clickable]="_options.clickableNavigationDots"
-        (click)="navigateTo(i)"
-        [class.active]="i === selected"
-        [class.inactive]="i !== selected"
-        *ngFor="let item of items; let i = index"
-      ></li>
-    </ul>
   </div>
+  <div class="wn-backdrop" aria-hidden="true" (click)="close()"></div>
+
+  <h1 class="sr-only" id="modal-title">Update information dialog</h1>
+  <p class="sr-only" id="modal-description">
+    This dialog contains information related to the latest features and fixes.
+  </p>
 </div>
-<div id="backdrop" (click)="close()"></div>
+}

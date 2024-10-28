@@ -1,98 +1,191 @@
-.modal {
-  width: 500px;
-  height: auto;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  * {
+    font-size: 14px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+}
+
+.wn-modal-container {
   position: fixed;
   z-index: 1000;
-}
-
-.modal-layout {
-  display: grid;
-  place-content: center;
-
-  .modal-body {
-    background: #fff;
-    overflow: hidden;
-
-    .image {
-      overflow: hidden;
-      align-items: center;
-      display: flex;
-      justify-content: center;
-    }
-
-    .title {
-      font-size: 1.3em;
-      font-weight: 100;
-      margin: 20px 20px 0 20px;
-      /* color: #222; */
-      text-align: center;
-    }
-
-    .text {
-      margin: 20px 20px 20px 20px;
-      /* color: #666; */
-      text-align: center;
-    }
-
-    .button {
-      padding: 0 20px 20px 20px;
-
-      button {
-        border: none;
-        padding: 10px 35px;
-        text-transform: uppercase;
-        cursor: pointer;
-        outline: none;
-      }
-
-      button:hover {
-        opacity: 0.9;
-      }
-    }
-  }
-
-  /** Dot navigation **/
-  .navigation {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    list-style-type: none;
-    margin: 20px;
-    padding: 0;
-
-    .dot {
-      border-radius: 9999px;
-      height: 12px;
-      width: 12px;
-      margin: 0 4px;
-    }
-
-    .active {
-      background-color: rgba(0, 0, 0, 0.8);
-      border: 1px solid rgba(0, 0, 0, 0);
-    }
-
-    .inactive {
-      background-color: transparent;
-      border: 1px solid rgba(0, 0, 0, 0.3);
-    }
-
-    .clickable .inactive {
-      cursor: pointer;
-    }
-  }
-}
-
-#backdrop {
-  backdrop-filter: blur(3px);
-  z-index: 900;
-  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.3);
+
+  .wn-modal {
+    width: 35em;
+    height: auto;
+    position: relative;
+
+    button {
+      &:focus-visible {
+        outline: 2px solid blue;
+        outline-offset: 2px;
+      }
+    }
+
+    .wn-close-modal-button {
+      position: absolute;
+      top: 0.5em;
+      right: 0.15em;
+      cursor: pointer;
+      background-color: rgba($color: #222, $alpha: 0.5);
+      color: #fff;
+      border: none;
+      aspect-ratio: 1/1;
+      border-radius: 100%;
+    }
+
+    .wn-modal-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.4em;
+      width: fit-content;
+
+      .wn-modal-body {
+        background: #fff;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+
+        .wn-image {
+          overflow: hidden;
+          align-items: center;
+          display: flex;
+          justify-content: center;
+        }
+
+        .wn-info-body {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 1.4em;
+          gap: 1.4em;
+
+          .wn-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #222;
+            text-align: center;
+          }
+
+          .wn-text {
+            color: #666;
+            text-align: center;
+          }
+
+          .wn-button {
+            border: none;
+            padding: 0.7em 2.5em;
+            text-transform: uppercase;
+            cursor: pointer;
+            outline: none;
+
+            &:hover {
+              opacity: 0.9;
+            }
+          }
+        }
+      }
+
+      /** Dot navigation **/
+      .wn-navigation {
+        .wn-navigation-list {
+          align-items: center;
+          display: flex;
+          justify-content: center;
+          list-style-type: none;
+          padding: 0;
+          margin: 0;
+          gap: 0.5em;
+
+          .wn-dot {
+            border-radius: 100%;
+            height: 1em;
+            width: 1em;
+            position: relative;
+
+            &.clickable {
+              &:not(.active) {
+                .wn-nav-button {
+                  cursor: pointer;
+                }
+
+                &:hover {
+                  background-color: rgba(0, 0, 0, 0.1);
+                }
+              }
+            }
+
+            .wn-nav-button {
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              border-radius: 100%;
+              left: 0;
+              right: 0;
+              width: 100%;
+              height: 100%;
+              display: block;
+              border: none;
+              overflow: hidden;
+              background-color: transparent;
+              color: transparent;
+              user-select: none;
+
+              &:focus-visible {
+                outline: 2px solid blue;
+                outline-offset: 2px;
+              }
+            }
+
+            &.active {
+              background-color: rgba(0, 0, 0, 0.8);
+              border: 1px solid rgba(0, 0, 0, 0);
+            }
+
+            &.inactive {
+              background-color: transparent;
+              border: 1px solid rgba(0, 0, 0, 0.3);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .wn-backdrop {
+    backdrop-filter: blur(3px);
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
 }
